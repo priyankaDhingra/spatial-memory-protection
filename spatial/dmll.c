@@ -51,22 +51,20 @@ void insertel(struct freeptrs *fp) {
 	temp = head;
 
 	if (head == NULL) {
-		printf("head initialized");
 		create_lookup();
-		table = memcpy(table, fp, sizeof(struct freeptrs));
-		printf("table----->%p",table);
+		table = memcpy(table, fp, sizeof(struct freeptrs))+ sizeof(fp);
+
 		//head = fp;
 	} else {
 		while (temp->next != NULL) {
-			printf("calculaet----------------------->>> %p\n", (temp->data->key));
 			temp = temp->next;
 		}
+		printf("key------->%p\n", fp->data->key);
+		table = memcpy(table, fp, sizeof(struct freeptrs))+ sizeof(fp);
+		fp=table;
 		temp->next = fp;
-		table = memcpy(table, fp, sizeof(struct freeptrs));
-		//printf("calculaet----------------------->>> %p\n", (temp->data->key));
+
 	}
-	temp = head;
-	printf("value = %p\n", (temp->data->key));
 }
 void removel(int dt) {
 	struct freeptrs *temp;
@@ -96,19 +94,29 @@ void removel(int dt) {
 void printall() {
 	struct freeptrs *temp;
 	temp = head;
-	printf("head = %p\n", (head->data->key));
-	printf("temp = %p\n", (temp->data->key));
+	struct spatialattr *arr_spa = malloc(sizeof(struct spatialattr));;
+
+	printf("head = %p\n", (head));
+	 memcpy(temp, head, sizeof(struct freeptrs));
+	arr_spa=temp->data;
+	printf("temp key = %p\n", (arr_spa->key));
+	printf("temp next = %p\n", (temp->next));
 	if (head == NULL) {
 		printf("List is empty");
 	} else {
+
+
 		while (temp != NULL) {
+
 			printf("base = %p\n", (temp->data->base));
 			printf("bound = %p\n", (temp->data->bound));
 			printf("key = %p\n", (temp->data->key));
 			printf("next = %p\n", (temp->next));
-			temp = temp->next;
+			 memcpy(temp, temp->next, sizeof(struct freeptrs));
+			//temp = temp->next;
 
 		}
+
 	}
 }
 
@@ -117,7 +125,7 @@ void store_metadata(void* address, void* base, void * bound) {
 	arr_spa->key = address;
 	arr_spa->base = base;
 	arr_spa->bound = bound;
-	printf("object--->%p\n", arr_spa->key);
+	printf("key------->%p\n", arr_spa->key);
 	struct freeptrs *fp;
 
 	fp = malloc(sizeof(struct freeptrs));
@@ -146,7 +154,7 @@ int main(int argc, char** argv) {
 	int arr[4];
 	store_metadata(&arr, &arr, sizeof(arr) + &arr);
 
-	int x = 10;
+	int x[10];
 	int *p = x;
 	store_metadata(&p, &p, sizeof(int) + &p);
 
