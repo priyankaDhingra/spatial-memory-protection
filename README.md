@@ -1,0 +1,1 @@
+# spatial-memory-protection
