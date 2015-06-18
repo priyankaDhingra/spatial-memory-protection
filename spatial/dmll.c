@@ -94,11 +94,12 @@ void removel(int dt) {
 void printall() {
 	struct freeptrs *temp;
 	temp = head;
-	struct spatialattr *arr_spa = malloc(sizeof(struct spatialattr));;
+	struct spatialattr *arr_spa = malloc(sizeof(struct spatialattr));
 
 	printf("head = %p\n", (head));
 	 memcpy(temp, head, sizeof(struct freeptrs));
-	arr_spa=temp->data;
+	 memcpy(arr_spa, temp->data, sizeof(struct spatialattr));
+	//arr_spa=temp->data;
 	printf("temp key = %p\n", (arr_spa->key));
 	printf("temp next = %p\n", (temp->next));
 	if (head == NULL) {
@@ -106,18 +107,21 @@ void printall() {
 	} else {
 
 
-		while (temp != NULL) {
+		while (temp->next != NULL) {
 
 			printf("base = %p\n", (temp->data->base));
 			printf("bound = %p\n", (temp->data->bound));
 			printf("key = %p\n", (temp->data->key));
 			printf("next = %p\n", (temp->next));
 			 memcpy(temp, temp->next, sizeof(struct freeptrs));
+
+			 printf("arr_spa = %p\n", (arr_spa->key));
 			//temp = temp->next;
 
 		}
 
 	}
+	free(arr_spa);
 }
 
 void store_metadata(void* address, void* base, void * bound) {
@@ -156,12 +160,12 @@ int main(int argc, char** argv) {
 
 	int x[10];
 	int *p = x;
-	store_metadata(&p, &p, sizeof(int) + &p);
+	//store_metadata(&p, &p, sizeof(int) + &p);
 
 	int num, i;
 	int result = 0;
-	printf("printall\n");
 
+	printf("printall\n");
 	printall();
 
 	for (i = 0; i < 2; i++) {
