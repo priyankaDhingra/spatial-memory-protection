@@ -15,11 +15,6 @@
 #include<string.h>
 void * table = 0;
 
-//struct spatialattr {
-//	void* key;
-//	void* base;
-//	void* bound;
-//};
 struct freeptrs {
 	void* key;
 	void* base;
@@ -77,18 +72,8 @@ void printall() {
 		printf("List is empty");
 
 	} else {
-		printf("base = %p\n", (temp->base));
-		printf("bound = %p\n", (temp->bound));
-		printf("key = %p\n", (temp->key));
-		printf("next = %p\n", (temp->next));
-		printf("\n-----------------------------\n");
 		while (temp->next != NULL) {
 			temp = temp->next;
-			printf("base = %p\n", (temp->base));
-			printf("bound = %p\n", (temp->bound));
-			printf("key = %p\n", (temp->key));
-			printf("next = %p\n", (temp->next));
-			printf("\n-----------------------------\n");
 
 		}
 
@@ -109,28 +94,15 @@ void store_metadata(void* address, void* base, void * bound) {
 struct freeptrs* load_metadata(void* address) {
 	struct freeptrs *temp, *temp2;
 	temp = head;
-	printf("\n--------111$---------\n");
 	if (head == NULL) {
 		printf("List is empty");
 
 	} else {
 		if (temp->key == address) {
-			printf("\n--------$$222$$$---------\n");
-			printf("base = %p\n", (temp->base));
-			printf("bound = %p\n", (temp->bound));
-			printf("key = %p\n", (temp->key));
-			printf("next = %p\n", (temp->next));
 			return temp;
 		} else {
-			printf("\n--------$$$$$$$$$$$---------\n");
 			while (temp->next != NULL || temp->key == address) {
 				temp = temp->next;
-				printf("base = %p\n", (temp->base));
-				printf("bound = %p\n", (temp->bound));
-				printf("key = %p\n", (temp->key));
-				printf("next = %p\n", (temp->next));
-				printf("\n--------$$$$$$$$$$$---------\n");
-
 			}
 			if (temp->key == address) {
 				return temp;
