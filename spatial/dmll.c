@@ -22,14 +22,15 @@ struct freeptrs {
 	struct freeptrs *next;
 }*head;
 static const size_t TABLE_ENTRIES = 4 * sizeof(struct freeptrs);
-int spatial_check(void *p, void *p_base, void* p_bound, int size) {
-	printf("p = %p\n", (p));
+
+int spatial_check(int *p, int* p_base, int* p_bound,int size) {
 	if (p < p_base || p + size >= p_bound) {
 		//violation
 		return 0;
 	}
 	return 1;
 }
+
 void create_lookup() {
 	table = mmap(0, TABLE_ENTRIES, PROT_READ | PROT_WRITE,
 	MAP_PRIVATE | MAP_ANON, -1, 0);
@@ -110,47 +111,47 @@ struct freeptrs* load_metadata(void* address) {
 
 		}
 	}
+
 	return temp;
 }
 
 int main(int argc, char** argv) {
 
-	int arr[4];
-	store_metadata(&arr, &arr, sizeof(arr) + &arr);
 
-	int x[10];
+	int x[4];
 	int *p = x;
-	store_metadata(&p, &p, sizeof(x) + &p);
+	printf("size:%d\n",sizeof(x));
+	store_metadata(&p, p, p+4);
 
 	int *q;
 	q = p;
-	store_metadata(&q, &q, sizeof(q) + &q);
+	store_metadata(&q, q, 4+p);
 	int num, i;
 	int result = 0;
 
-	printf("printall\n");
 	printall();
 	struct freeptrs *arr_spa = malloc(sizeof(struct freeptrs));
-	for (i = 0; i < 4; i++) {
+	arr_spa = load_metadata(&p);
+	for (i = 0; i < 6; i++) {
 
-		arr_spa = load_metadata(&arr);
-		if (spatial_check(&arr, arr_spa->base, arr_spa->bound, i) == 1) {
-			arr[i] = rand();
+
+		if (spatial_check(p, arr_spa->base, arr_spa->bound, i) == 1) {
+			p[i] = rand();
 		} else {
 			printf("out of bound access to arr\n");
 			break;
 		}
 
-		printf("arr[%d]=%d\n", i, arr[i]);
+		printf("arr[%d]=%d\n", i, p[i]);
 	}
 
 	printf("enter a number\n");
 	scanf("%d", &num);
 	struct freeptrs *arr_spa1 = malloc(sizeof(struct freeptrs));
 	for (i = 0; i < num; i++) {
-		arr_spa = load_metadata(&arr);
-		if (spatial_check(&arr, arr_spa->base, arr_spa->bound, i) == 1) {
-			result = result + arr[i];
+		arr_spa = load_metadata(&p);
+		if (spatial_check(p, arr_spa->base, arr_spa->bound,  i) == 1) {
+			result = result + p[i];
 		} else {
 			printf("out of bound access to arr\n");
 			break;
